@@ -12,10 +12,12 @@
     "bcrypt": "^3.0.6",
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
+    "crypto": "^1.0.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.16.1",
+    "locus": "^2.0.1",
     "moment": "^2.24.0",
     "mysql": "^2.16.0"
   }
