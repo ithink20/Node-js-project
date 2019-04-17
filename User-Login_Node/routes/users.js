@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
-const bcrypt = require('bcryptjs');
 var moment = require('moment');
 const crypto = require('crypto');
+
 global.user_email;
 global.user_name;
 const connection = mysql.createConnection({
@@ -31,6 +31,8 @@ router.get('/persons', (req, res) => res.render('persons'));
 router.get('/dashboard', (req, res) => res.render('dashboard'));
 //update page
 router.get('/update', (req, res) => res.render('update'));
+//delete page
+router.get('/delete', (req, res) => res.render('delete'));
 
 //REST API
 router.get('/', function (req, res) {
@@ -161,6 +163,24 @@ router.post('/update', (req, res) => {
         res.render('dashboard', { query: global.user_name });
     }
 });
+
+//Delete Handle
+router.post('/delete', (req, res) => {
+    let errors = [];
+    var { search } = req.body;
+    connection.query('DELETE FROM userData WHERE emailId = "'+ search +'" ', function (error, results, fields) {
+        if (error) throw error;
+        if (results.affectedRows == 0) {
+            errors.push({ msg: 'Email not registered' });
+            res.render('delete', {
+                errors
+            })
+        } else {
+            res.render('dashboard', {query : global.user_name});
+        }
+    });
+});
+
 
 //Login Handle
 router.post('/login', (req, res) => {
