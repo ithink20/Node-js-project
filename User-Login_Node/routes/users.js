@@ -75,7 +75,10 @@ router.post('/register', (req, res, next) => {
     req.check('email', 'Invalid email address').isEmail();
     //check fields
     var err_msg = req.validationErrors();
-    errors.push({ msg: err_msg[0].msg });
+    var err_msg = req.validationErrors();
+    if (err_msg != false) {
+        errors.push({ msg: err_msg[0].msg });
+    }
     if (!name || !email || !phone || !password || !password2) {
         console.log(phone);
         errors.push({ msg: 'please fill in all fields' });
