@@ -7,6 +7,11 @@ This is a user login and registration web form using Node.js, Express, MySQL, EJ
 $ npm install express
 $ npm install crypto
 $ npm install mysql
+$ npm install express-session
+$ npm install express-validator
+$ npm install express-ejs-layouts
+$ npm install connect-flash
+$ npm i moment
 ```
 
 
