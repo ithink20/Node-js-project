@@ -50,3 +50,8 @@ $ npm install mysql
   <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/user_notfound.png">
 </p>
 
+### Delete User Page
+<p align="center">
+  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/Delete.png">
+</p>
+
