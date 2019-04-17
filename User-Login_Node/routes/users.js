@@ -3,6 +3,8 @@ const router = express.Router();
 const mysql = require('mysql');
 var moment = require('moment');
 const crypto = require('crypto');
+const session = require('express-session');
+const validator = require('express-validator');
 
 global.user_email;
 global.user_name;
@@ -30,9 +32,21 @@ router.get('/persons', (req, res) => res.render('persons'));
 //dashboard page
 router.get('/dashboard', (req, res) => res.render('dashboard'));
 //update page
-router.get('/update', (req, res) => res.render('update'));
+router.get('/update', function (req, res) {
+    if (!req.session.user) {
+        res.render('login');
+    } else {
+        res.render('update');
+    }
+});
 //delete page
-router.get('/delete', (req, res) => res.render('delete'));
+router.get('/delete', function (req, res) {
+    if (!req.session.user) {
+        res.render('login');
+    } else {
+        res.render('delete');
+    }
+});
 
 //REST API
 router.get('/', function (req, res) {
@@ -54,12 +68,14 @@ router.post('/persons', (req, res) => {
 });
 
 //Register Handle
-router.post('/register', (req, res) => {
-    // console.log(req.body);
-    // res.send('hello');
-    var { name, email, phone, password, password2, time} = req.body;
+router.post('/register', (req, res, next) => {
+    //check validation
+    var { name, email, phone, password, password2, time } = req.body;
     let errors = [];
+    req.check('email', 'Invalid email address').isEmail();
     //check fields
+    var err_msg = req.validationErrors();
+    errors.push({ msg: err_msg[0].msg });
     if (!name || !email || !phone || !password || !password2) {
         console.log(phone);
         errors.push({ msg: 'please fill in all fields' });
@@ -173,7 +189,8 @@ router.post('/delete', (req, res) => {
         if (results.affectedRows == 0) {
             errors.push({ msg: 'Email not registered' });
             res.render('delete', {
-                errors
+                errors,
+                search
             })
         } else {
             res.render('dashboard', {query : global.user_name});
