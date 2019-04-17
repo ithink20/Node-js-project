@@ -3,7 +3,7 @@ const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const flash = require('connect-flash');
 const session = require('express-session');
-// const db = require('./db.js')
+const validator = require('express-validator');
 
 //EJS
 app.use(expressLayouts);
@@ -12,12 +12,16 @@ app.set('view engine', 'ejs');
 //Bodyparser
 app.use(express.urlencoded({ extended: false }));
 
+app.use(validator());
+
 //Express Session
 app.use(session({
     secret: 'secret',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
 }));
+
+
 
 //connect flash
 app.use(flash());
