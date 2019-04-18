@@ -40,9 +40,14 @@ router.get('/', function (req, res) {
 //Persons handle
 router.post('/persons', (req, res) => {
     var { search } = req.body;
-    connection.query('SELECT userName, emailId, phoneNo, dateTime FROM userData WHERE emailId = "' + search + '" ', function (error, results, fields) {
-        res.render('persons', { query: results });
-    })
+    let errors = [];
+    if (search.length == 0) {
+        res.redirect('/users/search');
+    } else {
+        connection.query('SELECT userName, emailId, phoneNo, dateTime FROM userData WHERE emailId = "' + search + '" ', function (error, results, fields) {
+            res.render('persons', { query: results });
+        })
+    }
 });
 
 //Update Handle
