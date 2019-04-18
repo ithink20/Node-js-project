@@ -1,17 +1,15 @@
 # Node.js Web Form
 This is a user login and registration web form using Node.js, Express, MySQL, EJS and some other packages.
 
-### Prerequisites
-
 ```sh
-$ npm install express
-$ npm install crypto
-$ npm install mysql
-$ npm install express-session
-$ npm install express-validator
-$ npm install express-ejs-layouts
-$ npm install connect-flash
-$ npm i moment
+# How to set up
+cd User-Login_Node && .\setup.sh
+
+# How to run server
+cd User-Login_Node && node main.js
+
+# Open "http://localhost:3000/" in your browser
+
 ```
 
 
