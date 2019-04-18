@@ -1,35 +1,32 @@
 
-      <!DOCTYPE html>
-      <html>
-      <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1">
-      
-      </head>
-      <body>
-          <% if (query.length > 0) { %>
-        <div class="row mt-5">
-        <div class="col-md-6 m-auto">
-            <div class="card card-body text-center">
-                <h1><i class="fab fa-node-js fa-3x"></i></h1>
-                <h5 class="card-title"> <%= query[0].userName %> </h5>
-                <p class="card-text"> Email : <%= query[0].emailId %> </p>
-                <p class="card-text"> Phone : <%= query[0].phoneNo %> </p>
-            </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <% if (query.length > 0) { %>
+    <div class="row mt-5">
+    <div class="col-md-6 m-auto">
+        <div class="card card-body text-center">
+            <h1><i class="fab fa-node-js fa-3x"></i></h1>
+            <h5 class="card-title"> <strong><%= query[0].userName %></strong> </h5>
+            <p class="card-text"> Email : <%= query[0].emailId %> </p>
+            <p class="card-text"> Phone : <%= query[0].phoneNo %> </p>
+            <p class="card-text"> Date-Time : <%= query[0].dateTime %> </p>
         </div>
-      </div>
-      <% } %>
-      <% if(query.length == 0) { %>
-        <div class="row mt-5">
-                <div class="col-md-6 m-auto">
-                    <div class="card card-body text-center">
-                        <h1><i class="fab fa-node-js fa-3x"></i></h1>
-                        <h5 class="card-title"> Email Not Found :( </h5>
-                    </div>
+    </div>
+    </div>
+    <% } %>
+    <% if(query.length == 0) { %>
+    <div class="row mt-5">
+            <div class="col-md-6 m-auto">
+                <div class="card card-body text-center">
+                    <h1><i class="fab fa-node-js fa-3x"></i></h1>
+                    <h5 class="card-title"> <strong>Email Not Found :(</strong> </h5>
                 </div>
-              </div>
-        <% } %>
-    
-      
-      
-      </body>
-      </html>
+            </div>
+            </div>
+    <% } %>
+</body>
+</html>

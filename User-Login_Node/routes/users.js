@@ -3,11 +3,8 @@ const router = express.Router();
 const mysql = require('mysql');
 var moment = require('moment');
 const crypto = require('crypto');
-const session = require('express-session');
 const validator = require('express-validator');
 
-global.user_email;
-global.user_name;
 const connection = mysql.createConnection({
     host     : 'db-intern.ciupl0p5utwk.us-east-1.rds.amazonaws.com', //mysql database name
     port     :  '3306',
@@ -23,32 +20,16 @@ connection.connect((err) => {
     console.log('Connected to database');
 });
 
-//login page
-router.get('/login', (req, res) => res.render('login'));
-//register page
-router.get('/register', (req, res) => res.render('register'));
 // user-search page
 router.get('/persons', (req, res) => res.render('persons'));
-//dashboard page
-router.get('/dashboard', (req, res) => res.render('dashboard'));
+//search page
+router.get('/search', (req, res) => res.render('search'));
 //update page
-router.get('/update', function (req, res) {
-    if (!req.session.user) {
-        res.render('login');
-    } else {
-        res.render('update');
-    }
-});
+router.get('/update', (req, res) => res.render('update'));
 //delete page
-router.get('/delete', function (req, res) {
-    if (!req.session.user) {
-        res.render('login');
-    } else {
-        res.render('delete');
-    }
-});
+router.get('/delete', (req, res) => res.render('delete'));
 
-//REST API
+//Users REST API
 router.get('/', function (req, res) {
     connection.query('SELECT * FROM userData', function (error, results, fields) {
         if (error) throw error;
@@ -56,130 +37,114 @@ router.get('/', function (req, res) {
     });
 });
 
+//Persons handle
 router.post('/persons', (req, res) => {
     var { search } = req.body;
-    connection.query('SELECT userName, emailId, phoneNo FROM userData WHERE emailId = "' + search + '" ', function (error, results, fields) {
-        if (results.length > 0) {
-            res.render('persons', { query: results });
-        } else {
-            res.render('persons', { query: results });
-        }
+    connection.query('SELECT userName, emailId, phoneNo, dateTime FROM userData WHERE emailId = "' + search + '" ', function (error, results, fields) {
+        res.render('persons', { query: results });
     })
-});
-
-//Register Handle
-router.post('/register', (req, res, next) => {
-    //check validation
-    var { name, email, phone, password, password2, time } = req.body;
-    let errors = [];
-    req.check('email', 'Invalid email address').isEmail();
-    //check fields
-    var err_msg = req.validationErrors();
-    var err_msg = req.validationErrors();
-    if (err_msg != false) {
-        errors.push({ msg: err_msg[0].msg });
-    }
-    if (!name || !email || !phone || !password || !password2) {
-        console.log(phone);
-        errors.push({ msg: 'please fill in all fields' });
-    }
-    //check password match
-    if (password != password2) {
-        errors.push({ msg: 'passwords don\'t match' });
-    }
-    //check pass length
-    if (password.length < 6) {
-        errors.push({ msg: 'password should be atleast 6 characters' });
-    }
-    if (errors.length > 0) {
-        res.render('register', {
-            errors,
-            name,
-            email,
-            phone,
-            password,
-            password2
-        })
-    } else {
-        // res.send('validation passed');
-        connection.query('SELECT emailId FROM userData WHERE emailId = "'+ email +'" ', function (error, results, fields) {
-            if (results.length > 0) {
-                errors.push({ msg: 'Email is already registered' });
-                res.render('register', {
-                    errors,
-                    name,
-                    email,
-                    phone,
-                    password,
-                    password2
-                })
-            } else {
-                //Hash password
-                let salt = crypto.randomBytes(16).toString('base64');
-                // console.log(req.body.password);
-                let hash = crypto.createHmac('sha256', salt).update(req.body.password).digest("base64");
-                password = salt + "$" + hash;
-                var time = moment().format();
-                connection.query('INSERT INTO userData VALUES ("' + name + '","' + email + '","' + phone + '","' + password + '","' + time + '")', function (error, res) {
-                    if (error) throw error;
-                    console.log(name + " is inserted");
-                });
-
-                req.flash('success_msg', 'you are registered & can login!');
-                res.redirect('/users/login');
-            }
-        });
-    }
 });
 
 //Update Handle
 router.post('/update', (req, res) => {
-    var { name, phone, password, password2 } = req.body;
+    var { name, phone, email, password, password2 } = req.body;
     //check password match
-    var time = moment().format();
     let errors = [];
-    if (name.length > 0) {
-        connection.query('UPDATE userData SET userName = "' + name + '", dateTime = "' + time + '" WHERE emailID = "' + global.user_email + '"', function (error, results, fields) {
-            if (error) throw error;
-            console.log('name is updated');
-        });
-    }
-    if (phone.length > 0) {
-        connection.query('UPDATE userData SET phoneNo = "' + phone + '", dateTime = "' + time + '" WHERE emailID = "' + global.user_email + '"', function (error, results, fields) {
-            if (error) throw error;
-            console.log('phone is updated');
-        });
-    }
-    if (password.length > 0) {
-        if (password != password2) {
-            errors.push({ msg: 'passwords don\'t match' });
-        }
-        //check pass length
-        if (password.length < 6) {
-            errors.push({ msg: 'password should be atleast 6 characters' });
-        }
-        if (errors.length > 0) {
-            res.render('register', {
-                errors,
-                name,
-                phone,
-                password,
-                password2
-            })
-        }
-        let salt = crypto.randomBytes(16).toString('base64');
-        // console.log(req.body.password);
-        let hash = crypto.createHmac('sha256', salt).update(password).digest("base64");
-        password = salt + "$" + hash;
-        connection.query('UPDATE userData SET password = "' + password + '", dateTime = "' + time +'" WHERE emailID = "' + global.user_email + '"', function (error, results, fields) {
-            if (error) throw error;
-            console.log('password is updated');
-        });
-    }
-    if (name.length > 0) {
-        res.render('dashboard', { query: name });
+    if (email.length == 0) {
+        errors.push({ msg: 'Email required!' });
+        res.render('update', {
+            errors,
+            name,
+            phone,
+            password,
+            password2,
+            email
+        })
     } else {
-        res.render('dashboard', { query: global.user_name });
+        connection.query('SELECT emailId FROM userData WHERE emailId = "' + email + '" ', function (error, results, fields) {
+            if (results.length > 0) {   // Email already registered, then => update.
+                var time = moment().format();
+                if (name.length > 0) {
+                    connection.query('UPDATE userData SET userName = "' + name + '", dateTime = "' + time + '" WHERE emailID = "' + email + '"', function (error, results, fields) {
+                        if (error) throw error;
+                        console.log('name is updated');
+                    });
+                }
+                if (phone.length > 0) {
+                    connection.query('UPDATE userData SET phoneNo = "' + phone + '", dateTime = "' + time + '" WHERE emailID = "' + email + '"', function (error, results, fields) {
+                        if (error) throw error;
+                        console.log('phone is updated');
+                    });
+                }
+                if (password.length > 0) {
+                    if (password != password2) {
+                        errors.push({ msg: 'passwords don\'t match' });
+                    }
+                    //check pass length
+                    if (password.length < 6) {
+                        errors.push({ msg: 'password should be atleast 6 characters' });
+                    }
+                    if (errors.length > 0) {
+                        res.render('update', {
+                            errors,
+                            name,
+                            email,
+                            phone,
+                            password,
+                            password2
+                        })
+                    }
+                    let salt = crypto.randomBytes(16).toString('base64');
+                    // console.log(req.body.password);
+                    let hash = crypto.createHmac('sha256', salt).update(password).digest("base64");
+                    password = salt + "$" + hash;
+                    connection.query('UPDATE userData SET password = "' + password + '", dateTime = "' + time + '" WHERE emailID = "' + email + '"', function (error, results, fields) {
+                        if (error) throw error;
+                        console.log('password is updated');
+                    });
+                }
+                req.flash('success_msg', 'succesfully updated!');
+                res.redirect('/users/update');
+            } else {    // Email not registerd, then => insert
+                req.check('email', 'Invalid email address').isEmail();
+                //check fields
+                var err_msg = req.validationErrors();
+                if (err_msg != false) {
+                    errors.push({ msg: err_msg[0].msg });
+                }
+                //check password match
+                if (password != password2) {
+                    errors.push({ msg: 'passwords don\'t match' });
+                }
+                //check pass length
+                if (password.length < 6) {
+                    errors.push({ msg: 'password should be atleast 6 characters' });
+                }
+                if (errors.length > 0) {
+                    res.render('update', {
+                        errors,
+                        name,
+                        email,
+                        phone,
+                        password,
+                        password2
+                    })
+                } else {
+                    //Hash password
+                    let salt = crypto.randomBytes(16).toString('base64');
+                    // console.log(req.body.password);
+                    let hash = crypto.createHmac('sha256', salt).update(req.body.password).digest("base64");
+                    password = salt + "$" + hash;
+                    var time = moment().format();
+                    connection.query('INSERT INTO userData VALUES ("' + name + '","' + email + '","' + phone + '","' + password + '","' + time + '")', function (error, res) {
+                        if (error) throw error;
+                        console.log(name + " is inserted");
+                    });
+                    req.flash('success_msg', 'succesfully inserted!');
+                    res.redirect('/users/update');
+                }
+            }
+        });
     }
 });
 
@@ -190,60 +155,16 @@ router.post('/delete', (req, res) => {
     connection.query('DELETE FROM userData WHERE emailId = "'+ search +'" ', function (error, results, fields) {
         if (error) throw error;
         if (results.affectedRows == 0) {
-            errors.push({ msg: 'Email not registered' });
+            errors.push({ msg: 'Email is not in record' });
             res.render('delete', {
                 errors,
                 search
             })
         } else {
-            res.render('dashboard', {query : global.user_name});
+            req.flash('success_msg', 'succesfully deleted!');
+            res.redirect('/users/delete');
         }
     });
 });
-
-
-//Login Handle
-router.post('/login', (req, res) => {
-    let errors = [];
-    var email = req.body.email;
-    var password = req.body.password;
-    global.user_email = email;
-    connection.query('SELECT * FROM userData WHERE emailId = "'+ email +'" ', function (error, results, fields) {
-        if (error) throw error;
-
-        //match password
-        if (results.length > 0) {
-            let passwordField = results[0].password.split('$');
-            let salt = passwordField[0];
-            let hash = crypto.createHmac('sha256', salt).update(req.body.password).digest("base64");
-            let tosplit = hash.split(passwordField[1]);
-            let toMatch = hash.split(tosplit[1]);
-            global.user_name = results[0].userName;
-            if (toMatch[0] == passwordField[1]) {
-                console.log('user ' + results[0].userName + ' is matched. Wohooo!');
-                res.render('dashboard', { query: results[0].userName });
-                //TODO:
-
-            } else {
-                errors.push({ msg: 'Incorrect Password!' });
-                res.render('login', {
-                    errors,
-                    email
-                })
-            }
-        } else {
-            req.flash('error_msg', 'Email does\'nt exist you need to register first!');
-            res.redirect('/users/register');
-        }
-    });
-});
-
-// Logout Handle
-router.get('/logout', (req, res) => {
-    req.flash('success_msg', 'You are logged out!');
-    res.redirect('/users/login');
-});
-
-
 
 module.exports = router;
