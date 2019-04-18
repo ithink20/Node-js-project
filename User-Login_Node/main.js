@@ -13,15 +13,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(validator());
 
-//Express Session
-app.use(session({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: true,
-}));
-
-
-
 //connect flash
 app.use(flash());
 
