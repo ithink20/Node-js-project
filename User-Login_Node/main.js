@@ -3,6 +3,7 @@ const expressLayouts = require('express-ejs-layouts');
 const app = express();
 const flash = require('connect-flash');
 const validator = require('express-validator');
+const session = require('express-session');
 
 //EJS
 app.use(expressLayouts);
@@ -12,6 +13,15 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
 app.use(validator());
+
+//Express Session
+app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+}));
+
+
 
 //connect flash
 app.use(flash());
