@@ -22,30 +22,21 @@ cd User-Login_Node && node main.js
   <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/Home.png">
 </p>
 
-#### Register Page
-<p align="center">
-  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/Register.png">
-</p>
-
-#### Login Page
-<p align="center">
-  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/Login.png">
-</p>
-
-#### Dashboard Page
-<p align="center">
-  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/Dashboard.png">
-</p>
-
-
 #### Update Page
 <p align="center">
   <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/update.png">
 </p>
 
+
+#### Search Page
+<p align="center">
+  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/search.png">
+</p>
+
+
 #### Search User - Found Page
 <p align="center">
-  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/User.png">
+  <img width="760" height="300" src="https://github.com/ithink20/Node-js-project/blob/master/Screenshots/user_found.png">
 </p>
 
 #### Search User - Not Found Page
