@@ -4,23 +4,9 @@ const mysql = require('mysql');
 const moment = require('moment');
 const crypto = require('crypto');
 const validator = require('express-validator');
+const connection = require('../db_config');
 
-const connection = mysql.createConnection({
-    host     : 'db-intern.ciupl0p5utwk.us-east-1.rds.amazonaws.com', //mysql database name
-    port     :  '3306',
-    user     : 'dummyUser', //mysql database username
-    password : 'dummyUser01', //mysql database password
-    database : 'db_intern' //mysql database name
-});
-
-connection.connect((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log('Connected to database');
-});
-
-// user-search page
+// // user-search page
 router.get('/persons', (req, res) => res.render('persons'));
 //search page
 router.get('/search', (req, res) => res.render('search'));
