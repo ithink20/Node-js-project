@@ -23,7 +23,7 @@ router.get('/', function (req, res) {
     });
 });
 
-//Persons handle
+// Persons handle
 router.post('/persons', (req, res) => {
     var { search } = req.body;
     let errors = [];
