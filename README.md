@@ -3,10 +3,10 @@ This is a user login and registration web form using Node.js, Express, MySQL, EJ
 
 ```sh
 # How to set up
-cd User-Login_Node && ./setup.sh
+cd User-Login && ./setup.sh
 
 # How to run server
-cd User-Login_Node && node main.js
+cd User-Login && node main.js
 
 # Open "http://localhost:3000/" in your browser
 
